@@ -3,130 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Spiel - Erster Zug</title>
+    <title>Game Menü</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
             margin: 0;
             padding: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             height: 100vh;
-        }
-        .game-container {
-            text-align: center;
-            border: 2px solid #333;
-            padding: 20px;
-            background-color: white;
-        }
-        .region {
-            display: inline-block;
-            width: 80px;
-            height: 80px;
-            margin: 10px;
-            background-color: #ddd;
-            border-radius: 5px;
-            text-align: center;
-            line-height: 80px;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        .region.selected {
-            background-color: #4CAF50;
+            background-color: #1e1e1e;
             color: white;
         }
-        .header {
+        .top-bar {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .timer, .coins {
+            font-size: 18px;
+        }
+        .coins-container {
+            display: flex;
+            align-items: center;
+        }
+        .plus-button {
+            margin-left: 5px;
+            padding: 5px 10px;
+            background: #4caf50;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+        .menu-button {
             font-size: 24px;
-            margin-bottom: 20px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: white;
         }
-        .footer {
-            margin-top: 20px;
+        .game-list {
+            margin-top: 50px;
+            width: 300px;
+            background: #333;
+            padding: 10px;
+            border-radius: 5px;
         }
-        .footer button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
+        .game-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: #444;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        .create-game {
+            margin-top: 10px;
+            padding: 10px;
+            background: #008cba;
             color: white;
             border: none;
             cursor: pointer;
+            width: 100%;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
-
-<div class="game-container">
-    <div class="header">Erster Zug - Spieler 1</div>
-    <p>Wähle eine Region, um deine Truppen zu setzen.</p>
-
-    <div class="regions">
-        <!-- 25 Regionen mit unterschiedlichen Multiplikatoren -->
-        <div class="region" data-multiplier="1">Region 1</div>
-        <div class="region" data-multiplier="2">Region 2</div>
-        <div class="region" data-multiplier="3">Region 3</div>
-        <div class="region" data-multiplier="4">Region 4</div>
-        <div class="region" data-multiplier="5">Region 5</div>
-        <div class="region" data-multiplier="6">Region 6</div>
-        <div class="region" data-multiplier="7">Region 7</div>
-        <div class="region" data-multiplier="8">Region 8</div>
-        <div class="region" data-multiplier="9">Region 9</div>
-        <div class="region" data-multiplier="10">Region 10</div>
-        <div class="region" data-multiplier="11">Region 11</div>
-        <div class="region" data-multiplier="12">Region 12</div>
-        <div class="region" data-multiplier="13">Region 13</div>
-        <div class="region" data-multiplier="14">Region 14</div>
-        <div class="region" data-multiplier="15">Region 15</div>
-        <div class="region" data-multiplier="16">Region 16</div>
-        <div class="region" data-multiplier="17">Region 17</div>
-        <div class="region" data-multiplier="18">Region 18</div>
-        <div class="region" data-multiplier="19">Region 19</div>
-        <div class="region" data-multiplier="20">Region 20</div>
-        <div class="region" data-multiplier="21">Region 21</div>
-        <div class="region" data-multiplier="22">Region 22</div>
-        <div class="region" data-multiplier="23">Region 23</div>
-        <div class="region" data-multiplier="24">Region 24</div>
-        <div class="region" data-multiplier="25">Region 25</div>
+    <div class="top-bar">
+        <div class="timer">00:00</div>
+        <div class="coins-container">
+            <div class="coins">Coins: 100</div>
+            <button class="plus-button" onclick="addCoins()">+</button>
+        </div>
+        <button class="menu-button" onclick="toggleMenu()">☰</button>
     </div>
-
-    <div class="footer">
-        <input type="number" id="troops" placeholder="Truppenanzahl" min="1" max="100">
-        <button id="setTroopsBtn" onclick="setTroops()">Truppen setzen</button>
+    
+    <div class="game-list">
+        <div class="game-item"><span>Spiel 1</span> <span>50 Coins</span></div>
+        <div class="game-item"><span>Spiel 2</span> <span>100 Coins</span></div>
+        <div class="game-item"><span>Spiel 3</span> <span>200 Coins</span></div>
     </div>
-</div>
-
-<script>
-    let selectedRegion = null;
-
-    // Eventlistener für Region-Auswahl
-    document.querySelectorAll('.region').forEach(region => {
-        region.addEventListener('click', () => {
-            // Alle Regionen zurücksetzen
-            document.querySelectorAll('.region').forEach(r => r.classList.remove('selected'));
-
-            // Region auswählen
-            region.classList.add('selected');
-            selectedRegion = region;
-        });
-    });
-
-    // Funktion zum Setzen der Truppen
-    function setTroops() {
-        if (selectedRegion === null) {
-            alert('Bitte wähle zuerst eine Region!');
-            return;
+    
+    <button class="create-game" onclick="createGame()">Spiel erstellen</button>
+    
+    <script>
+        function addCoins() {
+            alert("Coins aufladen wird noch implementiert!");
         }
-
-        const troops = document.getElementById('troops').value;
-        if (troops < 1 || troops > 100) {
-            alert('Die Truppenanzahl muss zwischen 1 und 100 liegen.');
-            return;
+        
+        function toggleMenu() {
+            alert("Menü öffnen wird noch implementiert!");
         }
-
-        alert(`Spieler 1 setzt ${troops} Truppen auf ${selectedRegion.innerText}.`);
-        // Hier könnte man weitere Logik hinzufügen, um das Spiel fortzusetzen.
-    }
-</script>
-
+        
+        function createGame() {
+            alert("Neues Spiel erstellen wird noch implementiert!");
+        }
+    </script>
 </body>
 </html>
