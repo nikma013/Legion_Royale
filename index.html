@@ -51,6 +51,8 @@
         .game-list {
             margin-top: 50px;
             width: 300px;
+            max-height: 300px;
+            overflow-y: auto;
             background: #333;
             padding: 10px;
             border-radius: 5px;
@@ -73,6 +75,32 @@
             width: 100%;
             border-radius: 5px;
         }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            color: black;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .popup input {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 5px;
+        }
+        .popup button {
+            width: 100%;
+            padding: 5px;
+            background: #008cba;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -85,15 +113,23 @@
         <button class="menu-button" onclick="toggleMenu()">☰</button>
     </div>
     
-    <div class="game-list">
+    <div class="game-list" id="gameList">
         <div class="game-item"><span>Spiel 1</span> <span>50 Coins</span></div>
         <div class="game-item"><span>Spiel 2</span> <span>100 Coins</span></div>
         <div class="game-item"><span>Spiel 3</span> <span>200 Coins</span></div>
     </div>
     
-    <button class="create-game" onclick="createGame()">Spiel erstellen</button>
+    <button class="create-game" onclick="showPopup()">Spiel erstellen</button>
+    
+    <div class="popup" id="popup">
+        <label for="coinInput">Münzen:</label>
+        <input type="number" id="coinInput" min="1" value="50">
+        <button onclick="addGame()">Bestätigen</button>
+    </div>
     
     <script>
+        let gameCount = 3;
+        
         function addCoins() {
             alert("Coins aufladen wird noch implementiert!");
         }
@@ -102,8 +138,24 @@
             alert("Menü öffnen wird noch implementiert!");
         }
         
-        function createGame() {
-            alert("Neues Spiel erstellen wird noch implementiert!");
+        function showPopup() {
+            document.getElementById("popup").style.display = "block";
+        }
+        
+        function addGame() {
+            let coinValue = document.getElementById("coinInput").value;
+            if (coinValue <= 0 || isNaN(coinValue)) {
+                alert("Bitte eine gültige Anzahl an Münzen eingeben.");
+                return;
+            }
+            
+            gameCount++;
+            let newGame = document.createElement("div");
+            newGame.classList.add("game-item");
+            newGame.innerHTML = `<span>Spiel ${gameCount}</span> <span>${coinValue} Coins</span>`;
+            
+            document.getElementById("gameList").appendChild(newGame);
+            document.getElementById("popup").style.display = "none";
         }
     </script>
 </body>
