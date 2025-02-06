@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Menü</title>
+    <script src="https://unpkg.com/@tonconnect/sdk@latest"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -75,32 +76,6 @@
             width: 100%;
             border-radius: 5px;
         }
-        .popup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            color: black;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        }
-        .popup input {
-            width: 100%;
-            margin-bottom: 10px;
-            padding: 5px;
-        }
-        .popup button {
-            width: 100%;
-            padding: 5px;
-            background: #008cba;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
     </style>
 </head>
 <body>
@@ -108,7 +83,7 @@
         <div class="timer">00:00</div>
         <div class="coins-container">
             <div class="coins">Coins: 100</div>
-            <button class="plus-button" onclick="addCoins()">+</button>
+            <button class="plus-button" id="connectWallet">+</button>
         </div>
         <button class="menu-button" onclick="toggleMenu()">☰</button>
     </div>
@@ -121,41 +96,22 @@
     
     <button class="create-game" onclick="showPopup()">Spiel erstellen</button>
     
-    <div class="popup" id="popup">
-        <label for="coinInput">Münzen:</label>
-        <input type="number" id="coinInput" min="1" value="50">
-        <button onclick="addGame()">Bestätigen</button>
-    </div>
-    
     <script>
-        let gameCount = 3;
-        
-        function addCoins() {
-            alert("Coins aufladen wird noch implementiert!");
+        async function connectWallet() {
+            const tonConnect = new TONConnect({ manifestUrl: 'https://yourwebsite.com/tonconnect-manifest.json' });
+            try {
+                await tonConnect.connect();
+                const wallet = await tonConnect.getWallet();
+                alert("Verbunden mit: " + wallet.address);
+            } catch (error) {
+                console.error("Verbindung fehlgeschlagen", error);
+            }
         }
+        
+        document.getElementById("connectWallet").addEventListener("click", connectWallet);
         
         function toggleMenu() {
             alert("Menü öffnen wird noch implementiert!");
-        }
-        
-        function showPopup() {
-            document.getElementById("popup").style.display = "block";
-        }
-        
-        function addGame() {
-            let coinValue = document.getElementById("coinInput").value;
-            if (coinValue <= 0 || isNaN(coinValue)) {
-                alert("Bitte eine gültige Anzahl an Münzen eingeben.");
-                return;
-            }
-            
-            gameCount++;
-            let newGame = document.createElement("div");
-            newGame.classList.add("game-item");
-            newGame.innerHTML = `<span>Spiel ${gameCount}</span> <span>${coinValue} Coins</span>`;
-            
-            document.getElementById("gameList").appendChild(newGame);
-            document.getElementById("popup").style.display = "none";
         }
     </script>
 </body>
