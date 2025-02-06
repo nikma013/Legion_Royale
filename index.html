@@ -76,6 +76,28 @@
             width: 100%;
             border-radius: 5px;
         }
+        /* Popup Styling */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #222;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .popup input {
+            padding: 5px;
+            margin-top: 10px;
+            width: 80px;
+        }
+        .popup button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -95,23 +117,58 @@
     </div>
     
     <button class="create-game" onclick="showPopup()">Spiel erstellen</button>
-    
+
+    <!-- Popup für Spieleingabe -->
+    <div class="popup" id="gamePopup">
+        <h3>Wie viele Coins?</h3>
+        <input type="number" id="coinInput" min="1" value="10">
+        <br>
+        <button onclick="addGame()">Bestätigen</button>
+        <button onclick="hidePopup()">Abbrechen</button>
+    </div>
+
     <script>
+        let gameCount = 3;
+
         async function connectWallet() {
-            const tonConnect = new TONConnect({ manifestUrl: 'https://nikma013.github.io/Legion_Royale/tonconnect-manifest.json' });
+            const tonConnect = new window.TonConnectSDK.TonConnect({ 
+                manifestUrl: 'https://yourwebsite.com/tonconnect-manifest.json' 
+            });
+
             try {
-                await tonConnect.connect();
+                await tonConnect.connectWallet();
                 const wallet = await tonConnect.getWallet();
                 alert("Verbunden mit: " + wallet.address);
             } catch (error) {
                 console.error("Verbindung fehlgeschlagen", error);
             }
         }
-        
+
         document.getElementById("connectWallet").addEventListener("click", connectWallet);
-        
+
         function toggleMenu() {
             alert("Menü öffnen wird noch implementiert!");
+        }
+
+        function showPopup() {
+            document.getElementById("gamePopup").style.display = "block";
+        }
+
+        function hidePopup() {
+            document.getElementById("gamePopup").style.display = "none";
+        }
+
+        function addGame() {
+            const coins = document.getElementById("coinInput").value;
+            gameCount++;
+            const gameList = document.getElementById("gameList");
+
+            const newGame = document.createElement("div");
+            newGame.classList.add("game-item");
+            newGame.innerHTML = `<span>Spiel ${gameCount}</span> <span>${coins} Coins</span>`;
+            gameList.appendChild(newGame);
+
+            hidePopup();
         }
     </script>
 </body>
