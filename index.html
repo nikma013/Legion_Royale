@@ -38,26 +38,20 @@
     </div>
 
     <script>
-        // TON Connect SDK initialisieren
-        const tonConnect = new TonConnectSDK.TonConnect({
-            manifestUrl: 'https://nikma013.github.io/Legion_Royale/tonconnect-manifest.json'  // WICHTIG: Deine URL hier einfügen!
-        });
+        document.addEventListener("DOMContentLoaded", function() {
+            const tonConnect = new TonConnect({
+                manifestUrl: 'https://nikma013.github.io/Legion_Royale/tonconnect-manifest.json'
+            });
 
-        // Event-Listener für den Wallet-Button
-        document.getElementById("connectWallet").addEventListener("click", async function() {
-            try {
-                const wallets = await tonConnect.getWallets();
-                console.log("Verfügbare Wallets:", wallets);  // Debugging
-
-                // Benutzer auffordern, eine Wallet zu verbinden
-                const wallet = await tonConnect.connectWallet();
-                console.log("Wallet verbunden:", wallet);
-
-                alert("Wallet verbunden: " + wallet.address);
-            } catch (error) {
-                console.error("Wallet Verbindung fehlgeschlagen", error);
-                alert("Fehler bei der Wallet-Verbindung");
-            }
+            document.getElementById("connectWallet").addEventListener("click", async function() {
+                try {
+                    await tonConnect.connectWallet();
+                    alert("Wallet erfolgreich verbunden!");
+                } catch (error) {
+                    console.error("Wallet Verbindung fehlgeschlagen", error);
+                    alert("Fehler bei der Wallet-Verbindung");
+                }
+            });
         });
     </script>
 
