@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Menü mit TON Wallet</title>
-    <script src="https://unpkg.com/@tonconnect/sdk@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tonconnect/sdk@latest"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -39,7 +39,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const tonConnect = new TonConnect({
+            const tonConnect = new window.TonConnect({
                 manifestUrl: 'https://nikma013.github.io/Legion_Royale/tonconnect-manifest.json'
             });
 
