@@ -3,173 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Menü</title>
+    <title>Game Menü mit TON Wallet</title>
     <script src="https://unpkg.com/@tonconnect/sdk@latest"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
             background-color: #1e1e1e;
             color: white;
-        }
-        .top-bar {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .timer, .coins {
-            font-size: 18px;
+            text-align: center;
+            margin: 50px;
         }
         .coins-container {
             display: flex;
             align-items: center;
+            justify-content: center;
         }
         .plus-button {
-            margin-left: 5px;
-            padding: 5px 10px;
+            padding: 10px 15px;
             background: #4caf50;
             border: none;
             color: white;
             cursor: pointer;
-        }
-        .menu-button {
-            font-size: 24px;
-            cursor: pointer;
-            background: none;
-            border: none;
-            color: white;
-        }
-        .game-list {
-            margin-top: 50px;
-            width: 300px;
-            max-height: 300px;
-            overflow-y: auto;
-            background: #333;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .game-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px;
-            background: #444;
-            margin: 5px 0;
-            border-radius: 5px;
-        }
-        .create-game {
-            margin-top: 10px;
-            padding: 10px;
-            background: #008cba;
-            color: white;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            border-radius: 5px;
-        }
-        /* Popup Styling */
-        .popup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #222;
-            padding: 20px;
-            border-radius: 5px;
-            text-align: center;
-        }
-        .popup input {
-            padding: 5px;
-            margin-top: 10px;
-            width: 80px;
-        }
-        .popup button {
-            margin-top: 10px;
-            padding: 5px 10px;
-            cursor: pointer;
+            font-size: 16px;
         }
     </style>
 </head>
 <body>
-    <div class="top-bar">
-        <div class="timer">00:00</div>
-        <div class="coins-container">
-            <div class="coins">Coins: 100</div>
-            <button class="plus-button" id="connectWallet">+</button>
-        </div>
-        <button class="menu-button" onclick="toggleMenu()">☰</button>
-    </div>
-    
-    <div class="game-list" id="gameList">
-        <div class="game-item"><span>Spiel 1</span> <span>50 Coins</span></div>
-        <div class="game-item"><span>Spiel 2</span> <span>100 Coins</span></div>
-        <div class="game-item"><span>Spiel 3</span> <span>200 Coins</span></div>
-    </div>
-    
-    <button class="create-game" onclick="showPopup()">Spiel erstellen</button>
 
-    <!-- Popup für Spieleingabe -->
-    <div class="popup" id="gamePopup">
-        <h3>Wie viele Coins?</h3>
-        <input type="number" id="coinInput" min="1" value="10">
-        <br>
-        <button onclick="addGame()">Bestätigen</button>
-        <button onclick="hidePopup()">Abbrechen</button>
+    <h1>Game Menü mit TON Wallet</h1>
+
+    <div class="coins-container">
+        <p>Coins: <span id="coinAmount">100</span></p>
+        <button class="plus-button" id="connectWallet">+</button>
     </div>
 
     <script>
-        let gameCount = 3;
+        // TON Connect SDK initialisieren
+        const tonConnect = new TonConnectSDK.TonConnect({
+            manifestUrl: 'https://nikma013.github.io/Legion_Royale/tonconnect-manifest.json'  // WICHTIG: Deine URL hier einfügen!
+        });
 
-        async function connectWallet() {
-            const tonConnect = new window.TonConnectSDK.TonConnect({ 
-                manifestUrl: 'https://nikma013.github.io/Legion_Royale/tonconnect-manifest.json' 
-            });
-
+        // Event-Listener für den Wallet-Button
+        document.getElementById("connectWallet").addEventListener("click", async function() {
             try {
-                await tonConnect.connectWallet();
-                const wallet = await tonConnect.getWallet();
-                alert("Verbunden mit: " + wallet.address);
+                const wallets = await tonConnect.getWallets();
+                console.log("Verfügbare Wallets:", wallets);  // Debugging
+
+                // Benutzer auffordern, eine Wallet zu verbinden
+                const wallet = await tonConnect.connectWallet();
+                console.log("Wallet verbunden:", wallet);
+
+                alert("Wallet verbunden: " + wallet.address);
             } catch (error) {
-                console.error("Verbindung fehlgeschlagen", error);
+                console.error("Wallet Verbindung fehlgeschlagen", error);
+                alert("Fehler bei der Wallet-Verbindung");
             }
-        }
-
-        document.getElementById("connectWallet").addEventListener("click", connectWallet);
-
-        function toggleMenu() {
-            alert("Menü öffnen wird noch implementiert!");
-        }
-
-        function showPopup() {
-            document.getElementById("gamePopup").style.display = "block";
-        }
-
-        function hidePopup() {
-            document.getElementById("gamePopup").style.display = "none";
-        }
-
-        function addGame() {
-            const coins = document.getElementById("coinInput").value;
-            gameCount++;
-            const gameList = document.getElementById("gameList");
-
-            const newGame = document.createElement("div");
-            newGame.classList.add("game-item");
-            newGame.innerHTML = `<span>Spiel ${gameCount}</span> <span>${coins} Coins</span>`;
-            gameList.appendChild(newGame);
-
-            hidePopup();
-        }
+        });
     </script>
+
 </body>
 </html>
