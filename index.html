@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Menü mit TON Wallet</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tonconnect/sdk@latest"></script>
+    
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -34,25 +34,33 @@
 
     <div class="coins-container">
         <p>Coins: <span id="coinAmount">100</span></p>
-        <button class="plus-button" id="connectWallet">+</button>
+        <button class="plus-button" id="ton-connect">+</button>
     </div>
 
+
+   <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+
+    <script>
+        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://nikma013.github.io/Legion_Royale/tonconnect-manifest.json',
+            buttonRootId: 'ton-connect'
+        });
+    </script>
+
+    
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const tonConnect = new window.TonConnect({
-                manifestUrl: 'https://nikma013.github.io/Legion_Royale/tonconnect-manifest.json'
-            });
+        const connectedWallet = await tonConnectUI.connectWallet();
+        // Do something with connectedWallet if needed
+        console.log(connectedWallet);
+    }
 
-            document.getElementById("connectWallet").addEventListener("click", async function() {
-                try {
-                    await tonConnect.connectWallet();
-                    alert("Wallet erfolgreich verbunden!");
-                } catch (error) {
-                    console.error("Wallet Verbindung fehlgeschlagen", error);
-                    alert("Fehler bei der Wallet-Verbindung");
-                }
-            });
-        });
+    // Call the function
+    connectToWallet().catch(error => {
+        console.error("Error connecting to wallet:", error);
+    });
+
+            
     </script>
 
 </body>
