@@ -20,21 +20,32 @@
             background-color: #1e1e1e;
             color: white;
         }
-        .top-bar {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+		
+		.top-bar {
+		  position: absolute;
+		  top: 10px;
+		  left: 10px;
+		  right: 10px;
+		  height: 50px;
+		  display: flex;
+		  align-items: stretch;
+		  justify-content: space-between;
+		}
+
+		.top-bar > * {
+		  display: flex;
+		  align-items: center;
+		  justify-content: center;
+		}
+
+		
         .timer, .coins {
             font-size: 18px;
+			align-self: flex-start;
         }
         .coins-container {
             display: flex;
-            align-items: center;
+			align-items: flex-start;
         }
         .plus-button {
             margin-left: 5px;
@@ -43,7 +54,18 @@
             border: none;
             color: white;
             cursor: pointer;
+			align-self: flex-start;
         }
+		
+		.menu-button {
+            font-size: 24px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: white;
+			align-self: flex-start;
+        }
+		
         .game-list {
             margin-top: 50px;
             width: 300px;
@@ -101,6 +123,7 @@
             <div class="coins">Coins: <span id="coinAmount">100</span></div>
             <button class="plus-button" id="ton-connect">+</button>
         </div>
+		<button class="menu-button" onclick="toggleMenu()">☰</button>
     </div>
     
     <div class="game-list" id="gameList">
@@ -118,6 +141,8 @@
         <button onclick="addGame()">Bestätigen</button>
         <button onclick="hidePopup()">Abbrechen</button>
     </div>
+	
+
 
     <script>
         let gameCount = 3;
@@ -143,6 +168,10 @@
             newGame.innerHTML = `<span>Spiel ${gameCount}</span> <span>${coins} Coins</span>`;
             gameList.appendChild(newGame);
             hidePopup();
+        }
+		
+			function toggleMenu() {
+            alert("Menü öffnen wird noch implementiert!");
         }
     </script>
 </body>
