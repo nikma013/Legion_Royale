@@ -44,13 +44,17 @@
         .coins-container {
             display: flex;
         }
-        .plus-button {
+        .wallet-button, .send-ton-button {
             margin-left: 5px;
             padding: 5px 10px;
             background: #4caf50;
             border: none;
             color: white;
             cursor: pointer;
+        }
+        .wallet-button.disabled {
+            background: gray !important;
+            cursor: not-allowed;
         }
         .menu-button {
             font-size: 24px;
@@ -59,6 +63,15 @@
             border: none;
             color: white;
         }
+		.plus-button {
+		  margin-left: 5px;
+		  padding: 5px 10px;
+		  background: #4caf50;
+		  border: none;
+		  color: white;
+		  cursor: pointer;
+		  font-size: 18px;
+		}
         .game-list {
             margin-top: 50px;
             width: 300px;
@@ -95,27 +108,28 @@
             width: 100%;
             border-radius: 5px;
         }
-        .popup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #222;
-            padding: 20px;
-            border-radius: 5px;
-            text-align: center;
-        }
-        .popup input {
-            padding: 5px;
-            margin-top: 10px;
-            width: 80px;
-        }
-        .popup button {
-            margin-top: 10px;
-            padding: 5px 10px;
-            cursor: pointer;
-        }
+		.popup {
+		  display: none;
+		  position: fixed;
+		  top: 50%;
+		  left: 50%;
+		  transform: translate(-50%, -50%);
+		  background: #222;
+		  padding: 20px;
+		  border-radius: 5px;
+		  text-align: center;
+		}
+		.popup input {
+		  padding: 5px;
+		  margin-top: 10px;
+		  width: 80px;
+		}
+		.popup button {
+		  margin-top: 10px;
+		  padding: 5px 10px;
+		  cursor: pointer;
+		}
+		
     </style>
 </head>
 <body>
@@ -123,60 +137,134 @@
         <div class="timer">00:00</div>
         <div class="coins-container">
             <div class="coins">Coins: <span id="coinAmount">100</span></div>
-            <button class="plus-button" id="ton-connect">+</button>
+            <button id="walletButton" class="wallet-button" onclick="connectWallet()">Wallet verbinden</button>
+            <button class="send-ton-button" onclick="sendTonTransaction()">TON senden</button>
         </div>
-        <button class="menu-button" onclick="toggleMenu()">☰</button>
+        <button class="menu-button"  onclick="window.location.href='game.html'">☰</button>
     </div>
     
     <div class="game-list" id="gameList">
-        <div class="game-item"><span>Spiel 1</span> <span>50 Coins</span> <button class="play-button" onclick="playGame('Spiel 1')">Play</button></div>
-        <div class="game-item"><span>Spiel 2</span> <span>100 Coins</span> <button class="play-button" onclick="playGame('Spiel 2')">Play</button></div>
-        <div class="game-item"><span>Spiel 3</span> <span>200 Coins</span> <button class="play-button" onclick="playGame('Spiel 3')">Play</button></div>
-    </div>
+        <div class="game-item"><span>Spiel 1</span> <span>50 Coins</span> <button class="play-button" onclick="startGame(50)">Play</button></div>
+        <div class="game-item"><span>Spiel 2</span> <span>100 Coins</span> <button class="play-button" onclick="startGame(100)">Play</button></div>
+        <div class="game-item"><span>Spiel 3</span> <span>200 Coins</span> <button class="play-button" onclick="startGame(200)">Play</button></div>
+	</div>
     
     <button class="create-game" onclick="showPopup()">Spiel erstellen</button>
-
-    <div class="popup" id="gamePopup">
-        <h3>Wie viele Coins?</h3>
-        <input type="number" id="coinInput" min="1" value="10">
-        <br>
-        <button onclick="addGame()">Bestätigen</button>
-        <button onclick="hidePopup()">Abbrechen</button>
-    </div>
-    
+	
+	<div class="popup" id="gamePopup">
+    <h3>Wie viele Coins?</h3>
+    <input type="number" id="coinInput" min="1" value="10">
+    <br>
+    <button onclick="addGame()">Bestätigen</button>
+    <button onclick="hidePopup()">Abbrechen</button>
+	</div>
+	    
     <script>
-        let gameCount = 3;
+	
+	let gameCount = 3;
+	function showPopup() {
+      document.getElementById("gamePopup").style.display = "block";
+    }
+  
+    function hidePopup() {
+      document.getElementById("gamePopup").style.display = "none";
+    }
+  
+    function addGame() {
+      const coins = document.getElementById("coinInput").value;
+      gameCount++;
+      const gameList = document.getElementById("gameList");
+      const newGame = document.createElement("div");
+      newGame.classList.add("game-item");
+	  newGame.innerHTML = `<span>Spiel ${gameCount}</span> <span>${coins} Coins</span> <button class="play-button" onclick="startGame(${coins})">Play</button>`;
+      gameList.appendChild(newGame);
+      hidePopup();
+    }
+	
+	function startGame(coins) {
+        window.location.href = `./game.html?coins=${coins}`;
+    }
+	
+	
+	
+        const recipientAddress = "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c";
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: 'https://nikma013.github.io/Legion_Royale/tonconnect-manifest.json',
-            buttonRootId: 'ton-connect'
+            manifestUrl: 'https://nikma013.github.io/Legion_Royale/tonconnect-manifest.json'
         });
-
-        function showPopup() {
-            document.getElementById("gamePopup").style.display = "block";
-        }
-
-        function hidePopup() {
-            document.getElementById("gamePopup").style.display = "none";
-        }
-
-        function addGame() {
-            const coins = document.getElementById("coinInput").value;
-            gameCount++;
-            const gameList = document.getElementById("gameList");
-            const newGame = document.createElement("div");
-            newGame.classList.add("game-item");
-            newGame.innerHTML = `<span>Spiel ${gameCount}</span> <span>${coins} Coins</span> <button class="play-button" onclick="playGame('Spiel ${gameCount}')">Play</button>`;
-            gameList.appendChild(newGame);
-            hidePopup();
-        }
         
-        function playGame(gameName) {
-            alert(gameName + " wird gestartet...");
+async function checkWalletConnection() {
+    const walletButton = document.getElementById("walletButton");
+	console.log(".")
+
+    try {
+        // Prüfen, ob eine Wallet-Verbindung besteht
+        const connectedWallet = await tonConnectUI.connected;
+		console.log(connectedWallet)
+        if (connectedWallet) {
+			console.log(connectedWallet)
+            walletButton.classList.add("disabled");
+            walletButton.disabled = true;
+            walletButton.style.background = "#ffffff";
+            walletButton.style.color = "blue";
+            walletButton.innerText = "Wallet verbunden";
+        } else {
+		console.log("not connected do nothing")
+		}
+		
+    } catch (error) {
+        console.error("Fehler beim Prüfen der Wallet-Verbindung", error);
+    }
+}
+
+        async function connectWallet() {
+    try {
+        // Prüfe, ob bereits eine Wallet verbunden ist
+        const connectedWallet = tonConnectUI.account;
+
+        if (connectedWallet) {
+            alert("Wallet ist bereits verbunden!");
+            return;
         }
 
-        function toggleMenu() {
-            alert("Menü öffnen wird noch implementiert!");
+        // Wenn keine Wallet verbunden ist, öffne das Verbindungsfenster
+        await tonConnectUI.openModal();
+
+        // Aktualisiere den Button nach erfolgreicher Verbindung
+        const walletButton = document.getElementById("walletButton");
+        walletButton.classList.add("disabled");
+        walletButton.disabled = true;
+        walletButton.style.background = "#ffffff";
+        walletButton.style.color = "blue";
+        walletButton.innerText = "Wallet verbunden";
+
+        alert("Wallet erfolgreich verbunden!");
+    } catch (error) {
+        console.error("Fehler beim Verbinden des Wallets:", error);
+        alert("Fehler beim Verbinden des Wallets.");
+    }
+}
+
+        
+        async function sendTonTransaction() {
+            try {
+                const amount = prompt("Wie viele TON möchtest du senden?");
+                if (!amount || isNaN(amount) || amount <= 0) {
+                    alert("Ungültige Eingabe");
+                    return;
+                }
+                const transaction = {
+                    validUntil: Math.floor(Date.now() / 1000) + 300,
+                    messages: [{ address: recipientAddress, amount: (amount * 10 ** 9).toString() }]
+                };
+                await tonConnectUI.sendTransaction(transaction);
+                alert("TON gesendet!");
+            } catch (error) {
+                alert("Fehler bei der Transaktion");
+            }
         }
+
+        
+        window.onload = checkWalletConnection;
     </script>
 </body>
 </html>

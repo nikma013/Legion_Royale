@@ -50,9 +50,9 @@
     </style>
 </head>
 <body>
-    <div class="loading-screen" id="loadingScreen">Lädt...</div>
+    <div class="loading-screen" id="loadingScreen">loading...</div>
     <div class="map-container hidden" id="mapContainer">
-        <img src="Darkened_Map.png" alt="Game Map">
+        <img src="Map.png" alt="Error loading Map">
     </div>
 
     <script>
@@ -60,7 +60,7 @@
             setTimeout(() => {
                 document.getElementById("loadingScreen").classList.add("hidden");
                 document.getElementById("mapContainer").classList.remove("hidden");
-            }, 2000); // 2 Sekunden Ladezeit
+            }, 1000); // 1 Sekunden Ladezeit
         };
     </script>
 </body>
